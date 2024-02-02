@@ -5,6 +5,7 @@ export type Currency =
   | 'ltc'
   | 'usdt'
   | 'xrp'
+  | 'ton'
   | 'bch'
   | 'bnb'
   | 'eos'

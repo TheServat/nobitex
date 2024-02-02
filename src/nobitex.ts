@@ -18,6 +18,7 @@ import {
   LimitationResponse,
   MarketStats,
   OrderListResponse,
+  OrderResponse,
   TradeListResponse,
   TransactionListResponse,
   UserProfileResponse,
@@ -30,12 +31,16 @@ import { Currency } from './currency';
 import { TimeFrame } from './resolutions';
 export class Nobitex {
   public apiUrl = 'https://api.nobitex.ir';
+  public testApiUrl = 'https://testnetapi.nobitex.ir';
   protected apiClient: AxiosInstance;
   constructor(
     protected readonly apiKey: string,
     protected readonly agentName?: string,
+    public readonly isTest = false,
   ) {
-    this.apiClient = axios.create({ baseURL: this.apiUrl });
+    this.apiClient = axios.create({
+      baseURL: isTest ? this.testApiUrl : this.apiUrl,
+    });
   }
 
   async orderBook(symbol: 'all'): Promise<IOrderBookAllResponse>;
@@ -421,9 +426,9 @@ export class Nobitex {
     return response.data;
   }
 
-  async getOrder(id?: number, clientOrderId?: string) {
-    const response = await this.apiClient.post<FavoriteMarketsResponse>(
-      `/market/orders/add`,
+  async getOrder(id?: number, clientOrderId?: string): Promise<OrderResponse> {
+    const response = await this.apiClient.post<OrderResponse>(
+      `/market/orders/status`,
       { id, clientOrderId },
       {
         headers: {
