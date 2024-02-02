@@ -123,61 +123,20 @@ export class Nobitex {
   watchOHLCV(
     symbol: Symbols,
     resolution: TimeFrame,
-    from: number | Date,
-    to: number | Date,
-    page?: number,
+    count: number,
   ): TypedEvent<HistoryResponse> {
-    return this.crateWatch<HistoryResponse>(
-      () => this.ohlcv(symbol, resolution, from, to, page),
-      1000,
-    );
-  }
-
-  watchTimeFrameOHLCV(
-    symbol: Symbols,
-    resolution: TimeFrame,
-  ): TypedEvent<
-    | {
-        t: number;
-        o: number;
-        h: number;
-        l: number;
-        c: number;
-        v: number;
-      }
-    | undefined
-  > {
-    let lastTime = 0;
-    return this.crateWatch<
-      | {
-          t: number;
-          o: number;
-          h: number;
-          l: number;
-          c: number;
-          v: number;
-        }
-      | undefined
-    >(async () => {
-      const timeFrameMs = this.timeFrameToMs(resolution);
-      const from = new Date(
-        this.roundTimeToNearestTimeFrame(Date.now(), timeFrameMs),
-      );
-      const to = new Date();
-
-      const ohlcv = await this.ohlcv(symbol, resolution, from, to);
-      if (ohlcv && ohlcv.t && lastTime !== ohlcv.t[ohlcv.t.length - 1]) {
-        lastTime = ohlcv.t[ohlcv.t.length - 1];
-        return {
-          t: ohlcv.t[ohlcv.t.length - 1],
-          o: ohlcv.o[ohlcv.o.length - 1],
-          h: ohlcv.h[ohlcv.h.length - 1],
-          l: ohlcv.l[ohlcv.l.length - 1],
-          c: ohlcv.c[ohlcv.c.length - 1],
-          v: ohlcv.v[ohlcv.v.length - 1],
-        };
-      }
-    }, 500);
+    if (count >= 500) {
+      throw new Error('count must be < 500');
+    }
+    const timeFrameMs = this.timeFrameToMs(resolution);
+    const now = this.roundTimeToNearestTimeFrame(Date.now(), timeFrameMs);
+    let from = now - timeFrameMs * count;
+    return this.crateWatch<HistoryResponse>(() => {
+      const result = this.ohlcv(symbol, resolution, from, Date.now());
+      const now = this.roundTimeToNearestTimeFrame(Date.now(), timeFrameMs);
+      from = now - timeFrameMs * count;
+      return result;
+    }, 1000);
   }
 
   async globalMarkets(): Promise<GlobalMarketResponse> {
