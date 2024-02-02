@@ -125,14 +125,14 @@ export class Nobitex {
     resolution: TimeFrame,
     count: number,
   ): TypedEvent<HistoryResponse> {
-    if (count >= 500) {
-      throw new Error('count must be < 500');
+    if (count > 500) {
+      throw new Error('count must be <= 500');
     }
     const timeFrameMs = this.timeFrameToMs(resolution);
     const now = this.roundTimeToNearestTimeFrame(Date.now(), timeFrameMs);
     let from = now - timeFrameMs * count;
     return this.crateWatch<HistoryResponse>(() => {
-      const result = this.ohlcv(symbol, resolution, from, Date.now());
+      const result = this.ohlcv(symbol, resolution, new Date(from), new Date());
       const now = this.roundTimeToNearestTimeFrame(Date.now(), timeFrameMs);
       from = now - timeFrameMs * count;
       return result;

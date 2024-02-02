@@ -54,4 +54,5 @@ export type Symbols =
   | 'AVAXUSDT'
   | 'MKRUSDT'
   | 'GMTUSDT'
-  | 'USDCUSDT';
+  | 'USDCUSDT'
+  | 'TONIRT';

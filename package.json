@@ -1,6 +1,6 @@
 {
   "name": "nobitex",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Nobitex exchange api in typescript",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
