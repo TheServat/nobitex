@@ -1,0 +1,58 @@
+{
+  "name": "nobitex",
+  "version": "0.0.1",
+  "description": "Nobitex exchange api in typescript",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/start",
+    "!dist/test",
+    "!dist/**/*.test.*"
+  ],
+  "engines": {
+    "node": ">= 20.9 < 21"
+  },
+  "devDependencies": {
+    "@types/jest": "~29.5",
+    "@typescript-eslint/eslint-plugin": "~6.19",
+    "@typescript-eslint/parser": "~6.19",
+    "esbuild": "^0.20.0",
+    "eslint": "~8.56",
+    "eslint-config-prettier": "~9.1",
+    "eslint-plugin-jest": "~27.6",
+    "jest": "~29.7",
+    "nodemon": "^3.0.3",
+    "prettier": "~3.2",
+    "rimraf": "~5.0",
+    "ts-api-utils": "~1.0",
+    "ts-jest": "~29.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.3"
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "npm run clean && npm run build-esm; npm run build-cjs; npm run build-types",
+    "build-esm": "esbuild src/index.ts --bundle --outdir=dist/esm --platform=browser --format=esm --minify --sourcemap",
+    "build-cjs": "esbuild src/index.ts --bundle --outdir=dist/cjs --platform=node --format=cjs --minify --sourcemap",
+    "build-types": "tsc --emitDeclarationOnly --declaration --outDir dist/types",
+    "lint": "eslint --ignore-path .gitignore .",
+    "fix": "prettier --ignore-path .gitignore --write . ; eslint --fix --ext .ts src",
+    "test": "jest",
+    "prepublishOnly": "npm run fix && npm run build"
+  },
+  "author": "Sajjad Servatjoo <sajjad.servatjoo@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/TheServat/nobitex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheServat/nobitex/issues"
+  },
+  "homepage": "https://github.com/TheServat/nobitex#readme",
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}
